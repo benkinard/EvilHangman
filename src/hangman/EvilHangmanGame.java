@@ -37,6 +37,15 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         this.dictionary.removeIf(s -> s.length() > wordLength);
     }
 
+    private int getWordLength() {
+        int length = 0;
+        for(String s : dictionary) {
+            length = s.length();
+            break;
+        }
+        return length;
+    }
+
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
         // If the current guess has already been guessed, throw a GuessAlreadyMadeException object
@@ -48,8 +57,9 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         // Create a Map to store partitions and variables to track the largest set and minimum occurrences of guess
         Map<String, Set<String>> partitions = new HashMap<>();
+        int wordLength = getWordLength();
         int maxSize = 0;
-        int minOccurrences = 100;
+        int minOccurrences = wordLength;
 
         // Loop through the words in the dictionary and create the partitions
         for(String word : dictionary) {
@@ -82,6 +92,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
                 minOccurrences = curOccurrences;
             }
         }
+        //                      PRIORITY #1
         // Keep only the largest partition(s)
         for(Iterator<Map.Entry<String, Set<String>>> itr = partitions.entrySet().iterator(); itr.hasNext();) {
             if(itr.next().getValue().size() < maxSize) {
@@ -90,12 +101,14 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
         // If there are multiple partitions of the largest size, pare it down to one partition
         if(partitions.size() > 1) {
+            //                  PRIORITY #2
             // If there is a partition that does not include the guessed letter, choose that one
             for(String pattern : partitions.keySet()) {
                 if(!pattern.contains(Character.toString(guess))) {
                     return partitions.get(pattern);
                 }
             }
+            //                  PRIORITY #3
             // If each partition has the guessed letter, choose the one with the fewest occurrences of the letter
             for(Iterator<Map.Entry<String, Set<String>>> itr = partitions.entrySet().iterator(); itr.hasNext();) {
                 int curOccurrences = 0;
@@ -111,11 +124,35 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
             // If there are multiple partitions with the minimum # of occurrences, pare it down to one partition
             if(partitions.size() > 1) {
-
+                prioritizeRightMost(partitions, wordLength - 1, guess);
             }
 
         }
+        return null;
+    }
 
+    private void prioritizeRightMost(Map<String, Set<String>> partitions, int startIndex, char guess) {
+        int rightmostOccurrence = 0;
+        // Identify the right-most occurrence of guess in all the patterns
+        for(String pattern : partitions.keySet()) {
+            int i = startIndex;
+            while(i > rightmostOccurrence) {
+                if(pattern.charAt(i) == guess) {
+                    rightmostOccurrence = i;
+                }
+                i--;
+            }
+        }
+        // Remove all partitions that do not have guess at the rightmostOccurrence position
+        for(Iterator<Map.Entry<String, Set<String>>> itr = partitions.entrySet().iterator(); itr.hasNext();) {
+            if(itr.next().getKey().charAt(rightmostOccurrence) != guess) {
+                itr.remove();
+            }
+        }
+        // If there is more than one partition, identify the one with the next right-most occurrence
+        if(partitions.size() > 1) {
+            prioritizeRightMost(partitions, rightmostOccurrence - 1, guess);
+        }
     }
 
     @Override
