@@ -7,7 +7,7 @@ import java.util.*;
 public class EvilHangmanGame implements IEvilHangmanGame {
 
     Set<String> dictionary;
-    SortedSet<String> guessedLetters;
+    SortedSet<Character> guessedLetters;
 
     public EvilHangmanGame() {
         dictionary = null;
@@ -39,7 +39,40 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
-        return null;
+        // If the current guess has already been guessed, throw a GuessAlreadyMadeException object
+        if(guessedLetters.contains(guess)) {
+            throw new GuessAlreadyMadeException();
+        } else {
+            guessedLetters.add(guess);
+        }
+
+        // Create a Map to store partitions
+        Map<String, Set<String>> partitions = new HashMap<>();
+
+        // Loop through the words in the dictionary and create the partitions
+        for(String word : dictionary) {
+            // Create StringBuilder variable to store partition pattern
+            StringBuilder pattern = new StringBuilder();
+            // Loop through each character of current word
+            for(int i = 0; i < word.length(); i++) {
+                // If current character matches the guess, append guess to the StringBuilder
+                if(word.charAt(i) == guess) {
+                    pattern.append(guess);
+                } else { // Otherwise, append an underscore to the StringBuilder
+                    pattern.append('_');
+                }
+            }
+            String key = pattern.toString();
+            if(partitions.get(key) == null) {
+                Set<String> patternMatches = new HashSet<>();
+                patternMatches.add(word);
+                partitions.put(key, patternMatches);
+            } else {
+                partitions.get(key).add(word);
+            }
+        }
+
+
     }
 
     @Override
