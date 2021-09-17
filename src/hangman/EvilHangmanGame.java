@@ -2,28 +2,32 @@ package hangman;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 public class EvilHangmanGame implements IEvilHangmanGame {
 
     Set<String> dictionary;
-    SortedSet<char> guessedLetters;
+    SortedSet<String> guessedLetters;
 
     public EvilHangmanGame() {
         dictionary = null;
+        guessedLetters = null;
     }
 
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {
-        // Clear any previous dictionary/set of words
+        // Clear any previous dictionary and guessed letters
         if(this.dictionary != null) {
             this.dictionary.clear();
         }
-        // Initialize EvilHangmanGame's dictionary to be an empty set
+        if(guessedLetters != null) {
+            guessedLetters.clear();
+        }
+        // Initialize EvilHangmanGame's dictionary to be an empty HashSet
         this.dictionary = new HashSet<>();
+        // Initialize guessedLetters to be an empty TreeSet
+        guessedLetters = new TreeSet<>();
+
         // Read the words from the dictionary file into the EvilHangmanGame's dictionary (set of words)
         Scanner scanner = new Scanner(dictionary);
         while(scanner.hasNext()) {
