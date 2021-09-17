@@ -10,6 +10,7 @@ import java.util.SortedSet;
 public class EvilHangmanGame implements IEvilHangmanGame {
 
     Set<String> dictionary;
+    SortedSet<char> guessedLetters;
 
     public EvilHangmanGame() {
         dictionary = null;
