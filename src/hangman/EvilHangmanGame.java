@@ -76,6 +76,15 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
         scanner.close();
 
+        // Check dictionary for valid input
+        for (String s : this.dictionary) {
+            for (int i = 0; i < s.length(); i++) {
+                if (!Character.isLetter(s.charAt(i))) {
+                    throw new EmptyDictionaryException(dictionary.getName() + " contains invalid input");
+                }
+            }
+        }
+
         // Remove any words from EvilHangmanGame's dictionary that are not equal to wordLength
         this.dictionary.removeIf(s -> s.length() != wordLength);
 

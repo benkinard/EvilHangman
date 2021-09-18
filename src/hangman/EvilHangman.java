@@ -49,6 +49,14 @@ public class EvilHangman {
                 System.out.print("Enter guess: ");
                 String guess = input.next();
 
+                // Check for valid input
+                if (guess.isBlank()) {
+                    throw new IllegalArgumentException("You must enter a letter as a guess");
+                }
+                if (!Character.isLetter(guess.charAt(0))) {
+                    throw new IllegalArgumentException(guess.charAt(0) + " is not valid input. Please guess a letter.");
+                }
+
                 // Run makeGuess
                 guess = guess.toLowerCase();
                 ehGame.setDictionary(ehGame.makeGuess(guess.charAt(0)));
@@ -63,7 +71,7 @@ public class EvilHangman {
                 } else {
                     System.out.print("Yes, there are " + guessOccurrences + " " + guess.charAt(0));
                 }
-            } catch (GuessAlreadyMadeException ex) {
+            } catch (GuessAlreadyMadeException | IllegalArgumentException ex) {
                 System.out.print(ex);
             }
             System.out.println("\n");
