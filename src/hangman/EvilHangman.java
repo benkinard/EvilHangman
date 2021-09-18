@@ -26,7 +26,11 @@ public class EvilHangman {
         int numGuesses = Integer.parseInt(args[2]);
         while (numGuesses > 0) {
             // Print # of guesses remaining
-            System.out.println("You have " + numGuesses + " guesses left");
+            if(numGuesses > 1) {
+                System.out.println("You have " + numGuesses + " guesses left");
+            } else {
+                System.out.println("You have " + numGuesses + " guess left");
+            }
 
             // Print alphabetized list of used guesses
             System.out.print("Used letters:");
@@ -55,12 +59,24 @@ public class EvilHangman {
             if(guessOccurrences == 0) {
                 System.out.print("Sorry, there are no " + guess.charAt(0) + "'s");
                 numGuesses--;
-            } else {
+            } else if (guessOccurrences == 1) {
                 System.out.print("Yes, there is " + guessOccurrences + " " + guess.charAt(0));
+            } else {
+                System.out.print("Yes, there are " + guessOccurrences + " " + guess.charAt(0));
             }
             System.out.println("\n");
-        }
 
+            // Exit if word has been guessed correctly
+            if (!ehGame.getPattern().contains("_")) {
+                numGuesses = 0;
+            }
+        }
+        if (ehGame.getPattern().contains("_")) {
+            System.out.println("You lose!");
+        } else {
+            System.out.println("You win!");
+        }
+        System.out.print("The word was: " + ehGame.getWord());
     }
 
 }

@@ -39,6 +39,15 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         this.dictionary = dictionary;
     }
 
+    public String getWord() {
+        String word = null;
+        for(String s : dictionary) {
+            word = s;
+            break;
+        }
+        return word;
+    }
+
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {
         // Clear any previous dictionary and guessed letters
