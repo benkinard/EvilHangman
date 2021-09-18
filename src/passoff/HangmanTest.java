@@ -106,7 +106,7 @@ public class HangmanTest {
         }
         Set<String> possibleWords = new HashSet<>();
         try{
-             possibleWords = studentGame.makeGuess('a');
+            possibleWords = studentGame.makeGuess('a');
         }
         catch(Throwable e){
             fail("Making a guess threw: " + e.getClass());
