@@ -91,8 +91,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
                 if(word.charAt(i) == guess) {
                     pattern.append(guess);
                     curOccurrences++;
-                } else { // Otherwise, append an underscore to the StringBuilder
-                    pattern.append('_');
+                } else { // Otherwise, append an underscore/previously guessed letters to the StringBuilder
+                    pattern.append(wordToGuess.charAt(i));
                 }
             }
             String key = pattern.toString();
