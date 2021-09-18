@@ -27,44 +27,44 @@ public class EvilHangman {
         Scanner input = new Scanner(System.in);
         int numGuesses = Integer.parseInt(args[2]);
         while (numGuesses > 0) {
-            // Print # of guesses remaining
-            if(numGuesses > 1) {
-                System.out.println("You have " + numGuesses + " guesses left");
-            } else {
-                System.out.println("You have " + numGuesses + " guess left");
-            }
-
-            // Print alphabetized list of used guesses
-            System.out.print("Used letters:");
-            for(Character letter : ehGame.getGuessedLetters()) {
-                System.out.print(" " + letter);
-            }
-            System.out.println();
-
-            // Show the current word pattern
-            System.out.println("Word: " + ehGame.getPattern());
-
-            // Prompt for guess
-            System.out.print("Enter guess: ");
-            String guess = input.next();
-
-            // Run makeGuess
-            guess = guess.toLowerCase();
             try {
-                ehGame.setDictionary(ehGame.makeGuess(guess.charAt(0)));
-            } catch (GuessAlreadyMadeException ex) {
-                // Add Code Here
-            }
+                // Print # of guesses remaining
+                if(numGuesses > 1) {
+                    System.out.println("You have " + numGuesses + " guesses left");
+                } else {
+                    System.out.println("You have " + numGuesses + " guess left");
+                }
 
-            // Print whether the guess is in the word
-            int guessOccurrences = ehGame.getNumOccurrences();
-            if(guessOccurrences == 0) {
-                System.out.print("Sorry, there are no " + guess.charAt(0) + "'s");
-                numGuesses--;
-            } else if (guessOccurrences == 1) {
-                System.out.print("Yes, there is " + guessOccurrences + " " + guess.charAt(0));
-            } else {
-                System.out.print("Yes, there are " + guessOccurrences + " " + guess.charAt(0));
+                // Print alphabetized list of used guesses
+                System.out.print("Used letters:");
+                for(Character letter : ehGame.getGuessedLetters()) {
+                    System.out.print(" " + letter);
+                }
+                System.out.println();
+
+                // Show the current word pattern
+                System.out.println("Word: " + ehGame.getPattern());
+
+                // Prompt for guess
+                System.out.print("Enter guess: ");
+                String guess = input.next();
+
+                // Run makeGuess
+                guess = guess.toLowerCase();
+                ehGame.setDictionary(ehGame.makeGuess(guess.charAt(0)));
+
+                // Print whether the guess is in the word
+                int guessOccurrences = ehGame.getNumOccurrences();
+                if(guessOccurrences == 0) {
+                    System.out.print("Sorry, there are no " + guess.charAt(0) + "'s");
+                    numGuesses--;
+                } else if (guessOccurrences == 1) {
+                    System.out.print("Yes, there is " + guessOccurrences + " " + guess.charAt(0));
+                } else {
+                    System.out.print("Yes, there are " + guessOccurrences + " " + guess.charAt(0));
+                }
+            } catch (GuessAlreadyMadeException ex) {
+                System.out.print(ex);
             }
             System.out.println("\n");
 

@@ -88,7 +88,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
         // If the current guess has already been guessed, throw a GuessAlreadyMadeException object
         if(guessedLetters.contains(guess)) {
-            throw new GuessAlreadyMadeException();
+            throw new GuessAlreadyMadeException(guess + " has already been guessed. Guess a different letter.");
         } else {
             guessedLetters.add(guess);
         }
