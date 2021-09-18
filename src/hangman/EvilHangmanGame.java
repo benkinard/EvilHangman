@@ -35,10 +35,6 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         return numOccurrences;
     }
 
-    public void setDictionary(Set<String> dictionary) {
-        this.dictionary = dictionary;
-    }
-
     public String getWord() {
         String word = null;
         for(String s : dictionary) {
@@ -50,6 +46,10 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {
+        if (dictionary.length() == 0) {
+            throw new EmptyDictionaryException("The file " + dictionary.getName() + " is empty");
+        }
+
         // Clear any previous dictionary and guessed letters
         if(this.dictionary != null) {
             this.dictionary.clear();
@@ -70,15 +70,32 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         while(scanner.hasNext()) {
             this.dictionary.add(scanner.next());
         }
-        // Remove any words from EvilHangmanGame's dictionary that are longer than wordLength
-        this.dictionary.removeIf(s -> s.length() > wordLength);
+        scanner.close();
+
+        // Check dictionary for valid input
+        for (String s : this.dictionary) {
+            for (int i = 0; i < s.length(); i++) {
+                if (!Character.isLetter(s.charAt(i))) {
+                    throw new EmptyDictionaryException(dictionary.getName() + " contains invalid input");
+                }
+            }
+        }
+
+        // Remove any words from EvilHangmanGame's dictionary that are not equal to wordLength
+        this.dictionary.removeIf(s -> s.length() != wordLength);
+
+        if (this.dictionary.isEmpty()) {
+            throw new EmptyDictionaryException("There are no words of length " + wordLength);
+        }
     }
 
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
+        // Convert guess to lowercase
+        guess = Character.toLowerCase(guess);
         // If the current guess has already been guessed, throw a GuessAlreadyMadeException object
         if(guessedLetters.contains(guess)) {
-            throw new GuessAlreadyMadeException();
+            throw new GuessAlreadyMadeException(guess + " has already been guessed. Guess a different letter.");
         } else {
             guessedLetters.add(guess);
         }
@@ -132,6 +149,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             // If there is a partition that does not include the guessed letter, choose that one
             for(String pattern : partitions.keySet()) {
                 if(!pattern.contains(Character.toString(guess))) {
+                    numOccurrences = 0;
+                    this.dictionary = partitions.get(pattern);
                     return partitions.get(pattern);
                 }
             }
@@ -160,6 +179,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         wordToGuess = finalPattern;
         // Update occurrences of guessed letter
         numOccurrences = occurrences;
+        // Update dictionary to new partition
+        this.dictionary = partitions.get(finalPattern);
         return partitions.get(finalPattern);
     }
 
