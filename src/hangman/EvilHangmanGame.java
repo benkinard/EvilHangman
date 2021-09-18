@@ -50,6 +50,10 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {
+        if (dictionary.length() == 0) {
+            throw new EmptyDictionaryException("The file " + dictionary.getName() + " is empty");
+        }
+
         // Clear any previous dictionary and guessed letters
         if(this.dictionary != null) {
             this.dictionary.clear();
@@ -70,8 +74,14 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         while(scanner.hasNext()) {
             this.dictionary.add(scanner.next());
         }
-        // Remove any words from EvilHangmanGame's dictionary that are longer than wordLength
-        this.dictionary.removeIf(s -> s.length() > wordLength);
+        scanner.close();
+
+        // Remove any words from EvilHangmanGame's dictionary that are not equal to wordLength
+        this.dictionary.removeIf(s -> s.length() != wordLength);
+
+        if (this.dictionary.isEmpty()) {
+            throw new EmptyDictionaryException("There are no words of length " + wordLength);
+        }
     }
 
     @Override

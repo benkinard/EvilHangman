@@ -11,15 +11,17 @@ public class EvilHangman {
     public static void main(String[] args) {
         EvilHangmanGame ehGame = new EvilHangmanGame();
 
+        // Read the dictionary file into the instance of EvilHangmanGame
         try {
-            // Read the dictionary file into the instance of EvilHangmanGame
             File dictionary = new File(args[0]);
             int wordLength = Integer.parseInt(args[1]);
             ehGame.startGame(dictionary, wordLength);
         } catch (IOException ex) {
-            // Add code here
+            ex.printStackTrace();
+            System.exit(1);
         } catch (EmptyDictionaryException ex) {
-            // Add code here
+            System.out.println(ex);
+            System.exit(1);
         }
 
         Scanner input = new Scanner(System.in);
@@ -37,7 +39,7 @@ public class EvilHangman {
             for(Character letter : ehGame.getGuessedLetters()) {
                 System.out.print(" " + letter);
             }
-            System.out.println("");
+            System.out.println();
 
             // Show the current word pattern
             System.out.println("Word: " + ehGame.getPattern());
@@ -71,6 +73,8 @@ public class EvilHangman {
                 numGuesses = 0;
             }
         }
+        input.close();
+
         if (ehGame.getPattern().contains("_")) {
             System.out.println("You lose!");
         } else {
