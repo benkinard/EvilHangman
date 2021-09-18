@@ -8,10 +8,35 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     Set<String> dictionary;
     SortedSet<Character> guessedLetters;
+    String wordToGuess;
+    int numOccurrences;
 
     public EvilHangmanGame() {
         dictionary = null;
         guessedLetters = null;
+        wordToGuess = null;
+        numOccurrences = 0;
+    }
+
+    private int getWordLength() {
+        int length = 0;
+        for(String s : dictionary) {
+            length = s.length();
+            break;
+        }
+        return length;
+    }
+
+    public String getPattern() {
+        return wordToGuess;
+    }
+
+    public int getNumOccurrences() {
+        return numOccurrences;
+    }
+
+    public void setDictionary(Set<String> dictionary) {
+        this.dictionary = dictionary;
     }
 
     @Override
@@ -23,10 +48,13 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         if(guessedLetters != null) {
             guessedLetters.clear();
         }
+
         // Initialize EvilHangmanGame's dictionary to be an empty HashSet
         this.dictionary = new HashSet<>();
         // Initialize guessedLetters to be an empty TreeSet
         guessedLetters = new TreeSet<>();
+        // Initialize wordToGuess to be underscores up to size wordLength
+        wordToGuess = "_".repeat(wordLength);
 
         // Read the words from the dictionary file into the EvilHangmanGame's dictionary (set of words)
         Scanner scanner = new Scanner(dictionary);
@@ -35,15 +63,6 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
         // Remove any words from EvilHangmanGame's dictionary that are longer than wordLength
         this.dictionary.removeIf(s -> s.length() > wordLength);
-    }
-
-    private int getWordLength() {
-        int length = 0;
-        for(String s : dictionary) {
-            length = s.length();
-            break;
-        }
-        return length;
     }
 
     @Override
@@ -119,9 +138,19 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         // There is now 1 partition in the map; Return that partition
         String finalPattern = "";
+        int occurrences = 0;
         for(String pattern : partitions.keySet()) {
+            for(int i = 0; i < pattern.length(); i++) {
+                if(pattern.charAt(i) == guess) {
+                    occurrences++;
+                }
+            }
             finalPattern = pattern;
         }
+        // Update current wordToGuess pattern
+        wordToGuess = finalPattern;
+        // Update occurrences of guessed letter
+        numOccurrences = occurrences;
         return partitions.get(finalPattern);
     }
 
