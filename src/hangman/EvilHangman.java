@@ -58,8 +58,7 @@ public class EvilHangman {
                 }
 
                 // Run makeGuess
-                guess = guess.toLowerCase();
-                ehGame.setDictionary(ehGame.makeGuess(guess.charAt(0)));
+                ehGame.makeGuess(guess.charAt(0));
 
                 // Print whether the guess is in the word
                 int guessOccurrences = ehGame.getNumOccurrences();

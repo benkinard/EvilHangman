@@ -35,10 +35,6 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         return numOccurrences;
     }
 
-    public void setDictionary(Set<String> dictionary) {
-        this.dictionary = dictionary;
-    }
-
     public String getWord() {
         String word = null;
         for(String s : dictionary) {
@@ -95,6 +91,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
+        // Convert guess to lowercase
+        guess = Character.toLowerCase(guess);
         // If the current guess has already been guessed, throw a GuessAlreadyMadeException object
         if(guessedLetters.contains(guess)) {
             throw new GuessAlreadyMadeException(guess + " has already been guessed. Guess a different letter.");
@@ -151,6 +149,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             // If there is a partition that does not include the guessed letter, choose that one
             for(String pattern : partitions.keySet()) {
                 if(!pattern.contains(Character.toString(guess))) {
+                    numOccurrences = 0;
+                    this.dictionary = partitions.get(pattern);
                     return partitions.get(pattern);
                 }
             }
@@ -179,6 +179,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         wordToGuess = finalPattern;
         // Update occurrences of guessed letter
         numOccurrences = occurrences;
+        // Update dictionary to new partition
+        this.dictionary = partitions.get(finalPattern);
         return partitions.get(finalPattern);
     }
 
